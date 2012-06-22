@@ -35,7 +35,7 @@ module ZillowApi
 
       def mode_of_transit(location)
         key = parsed_response(location).search("uniqueness").search("category").last.attributes['type'].value.downcase
-        value = parsed_response(location).search("uniqueness").search("category").last.text
+        value = parsed_response(location).search("uniqueness").search("category").last.children.map {|s| s.text}
         { key => value }
       end
 

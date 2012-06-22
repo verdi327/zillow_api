@@ -4,8 +4,8 @@ require File.expand_path('../lib/zillow_demographics/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["michael verdi"]
   gem.email         = ["michael.v.verdi@gmail.com"]
-  gem.description   = %q{wrapper for the zillow zillow_demographics api}
-  gem.summary       = %q{wrapper for the zillow zillow_demographics api}
+  gem.description   = %q{wrapper for the zillow_demographics api}
+  gem.summary       = %q{wrapper for the zillow_demographics api}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($\)
@@ -17,4 +17,5 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency('faraday')
   gem.add_runtime_dependency('nokogiri')
+  gem.add_development_dependency('rspec')
 end
