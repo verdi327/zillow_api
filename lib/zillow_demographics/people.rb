@@ -57,7 +57,6 @@ module ZillowApi
       def parse_all(xml_package)
         Nokogiri::HTML(xml_package)
       end
-
     end
   end
 end
