@@ -1,5 +1,4 @@
 require 'faraday'
-require 'xmlsimple'
 require 'nokogiri'
 
 module ZillowApi
