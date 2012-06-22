@@ -2,8 +2,8 @@ require 'nokogiri'
 
 module ZillowApi
   class People
-    attr_accessor :single_males, :single_females, :median_age, :average_commute_time, :who_live_here
-    attr_accessor :transportation, :owners, :renters, :home_value
+    attr_accessor :single_males, :single_females, :median_age, :average_commute_time
+    attr_accessor :transportation, :home_value, :who_live_here
 
     def initialize(attributes)
       self.average_commute_time = attributes['average commute time (minutes)']
@@ -11,10 +11,8 @@ module ZillowApi
       self.single_males         = attributes['single males']
       self.median_age           = attributes['median age']
       self.who_live_here        = attributes['lives here']
-      self.transportation       = attributes[]
-      self.owners               = attributes[]
-      self.renters              = attributes[]
-      self.home_value           = attributes[]
+      self.transportation       = attributes['transportation']
+      self.home_value           = attributes['zillow home value index']
     end
 
     class << self
@@ -23,26 +21,32 @@ module ZillowApi
         ZillowApi::Client.new
       end
 
-      def data_attributes(location)
-        keys = parsed_response.search("page")[-1].search("table")[0].search("attribute").map {|key| key.child.text.downcase }
-        values = parsed_response.search("page")[-1].search("table")[0].search("attribute").search("city").map { |values| values.child.text }
+      def demo_attributes(location)
+        keys = parsed_response(location).search("page")[-1].search("table")[0].search("attribute").map {|key| key.child.text.downcase }
+        values = parsed_response(location).search("page")[-1].search("table")[0].search("attribute").search("city").map { |values| values.child.text }
         Hash[keys.zip(values)]
       end
 
       def lives_here_attributes(location)
-        keys = parsed_response.search("page")[-1].search("liveshere").search("title").map { |value| value.text.downcase }
-        values = parsed_response.search("page")[-1].search("liveshere").search("name").map { |key| key.text }
+        keys = parsed_response(location).search("page")[-1].search("liveshere").search("title").map { |value| value.text.downcase }
+        values = parsed_response(location).search("page")[-1].search("liveshere").search("name").map { |key| key.text }
         { 'lives here' => Hash[keys.zip(values)] }
       end
 
       def mode_of_transit(location)
-        key = parsed_response.search("uniqueness").search("category").last.attributes['type'].value.downcase
-        value = parsed_response.search("uniqueness").search("category").last.text
-        { key: value }
+        key = parsed_response(location).search("uniqueness").search("category").last.attributes['type'].value.downcase
+        value = parsed_response(location).search("uniqueness").search("category").last.text
+        { key => value }
+      end
+
+      def home_value(location)
+        key = parsed_response(location).search("page").first.search("data").first.search("attribute").first.child.text.downcase
+        value = parsed_response(location).search("page").first.search("data").first.search("city").first.text
+        { key => value }
       end
 
       def find_by_city(location)
-        attributes = lives_here_attributes(location).merge(data_attributes(location))
+        attributes = lives_here_attributes(location).merge(demo_attributes(location)).merge(home_value(location)).merge(mode_of_transit(location))
         ZillowApi::People.new(attributes)
       end
 
