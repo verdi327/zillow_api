@@ -24,24 +24,38 @@ module ZillowApi
       def demo_attributes(location)
         keys = parsed_response(location).search("page")[-1].search("table")[0].search("attribute").map {|key| key.child.text.downcase }
         values = parsed_response(location).search("page")[-1].search("table")[0].search("attribute").search("city").map { |values| values.child.text }
+        if values == []
+          values = %w[N/A N/A N/A N/A N/A N/A N/A]
+        end
         Hash[keys.zip(values)]
       end
 
       def lives_here_attributes(location)
         keys = parsed_response(location).search("page")[-1].search("liveshere").search("title").map { |value| value.text.downcase }
         values = parsed_response(location).search("page")[-1].search("liveshere").search("name").map { |key| key.text }
-        { 'lives here' => Hash[keys.zip(values)] }
+        if keys == []
+          { 'lives here' => 'N/A'}
+        else
+          { 'lives here' => Hash[keys.zip(values)] }
+        end
       end
 
       def mode_of_transit(location)
         key = parsed_response(location).search("uniqueness").search("category").last.attributes['type'].value.downcase
         value = parsed_response(location).search("uniqueness").search("category").last.children.map {|s| s.text}
-        { key => value }
+        if value == []
+          value = "N/A"
+        else
+          { key => value }
+        end
       end
 
       def home_value(location)
         key = parsed_response(location).search("page").first.search("data").first.search("attribute").first.child.text.downcase
         value = parsed_response(location).search("page").first.search("data").first.search("city").first.text
+        if value == []
+          value = ['N/A']
+        end
         { key => value }
       end
 
