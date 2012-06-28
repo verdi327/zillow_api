@@ -53,7 +53,7 @@ module ZillowApi
       def home_value(location)
         key = parsed_response(location).search("page").first.search("data").first.search("attribute").first.child.text.downcase
         value = parsed_response(location).search("page").first.search("data").first.search("city").first.text
-        if value == []
+        if value == [] || value.to_i < 25000
           value = ['N/A']
         end
         { key => value }
