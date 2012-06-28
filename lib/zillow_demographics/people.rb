@@ -44,7 +44,7 @@ module ZillowApi
         key = parsed_response(location).search("uniqueness").search("category").last.attributes['type'].value.downcase
         value = parsed_response(location).search("uniqueness").search("category").last.children.map {|s| s.text}
         if key != "transportation"
-          { 'transportaion' => ["N/A"] }
+          { 'transportation' => ["N/A"] }
         else
           { key => value }
         end
