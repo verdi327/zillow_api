@@ -43,8 +43,8 @@ module ZillowApi
       def mode_of_transit(location)
         key = parsed_response(location).search("uniqueness").search("category").last.attributes['type'].value.downcase
         value = parsed_response(location).search("uniqueness").search("category").last.children.map {|s| s.text}
-        if value == []
-          value = "N/A"
+        if key != "transportation"
+          { 'transportaion' => ["N/A"] }
         else
           { key => value }
         end
