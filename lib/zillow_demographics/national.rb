@@ -18,25 +18,25 @@ module ZillowApi
         ZillowApi::Client.new
       end
 
-      def demo_attributes(location)
-        keys = parsed_response(location).search("page")[-1].search("table")[0].search("attribute").map {|key| key.child.text.downcase }
-        values = parsed_response(location).search("page")[-1].search("table")[0].search("attribute").search("nation").map { |values| values.child.text }
+      def demo_attributes(location, api_key)
+        keys = parsed_response(location, api_key).search("page")[-1].search("table")[0].search("attribute").map {|key| key.child.text.downcase }
+        values = parsed_response(location, api_key).search("page")[-1].search("table")[0].search("attribute").search("nation").map { |values| values.child.text }
         Hash[keys.zip(values)]
       end
 
-      def home_value(location)
-        key = parsed_response(location).search("page").first.search("data").first.search("attribute").first.child.text.downcase
-        value = parsed_response(location).search("page").first.search("data").first.search("nation").first.text
+      def home_value(location, api_key)
+        key = parsed_response(location, api_key).search("page").first.search("data").first.search("attribute").first.child.text.downcase
+        value = parsed_response(location, api_key).search("page").first.search("data").first.search("nation").first.text
         { key => value }
       end
 
-      def find_by_city(location)
-        attributes = demo_attributes(location).merge(home_value(location))
+      def find_by_city(location, api_key)
+        attributes = demo_attributes(location, api_key).merge(home_value(location, api_key))
         ZillowApi::National.new(attributes)
       end
 
-      def parsed_response(location)
-        parse_all(client.get_city_data(location))
+      def parsed_response(location, api_key)
+        parse_all(client.get_city_data(location, api_key))
       end
 
       def parse_all(xml_package)
