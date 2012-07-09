@@ -15,33 +15,33 @@ describe ZillowApi::National do
       ZillowApi::National.stub(:parsed_response).and_return(Nokogiri::HTML(chicago_response))
     end
 
-    describe '.demo_attributes(location, api_key)' do
+    describe '.demo_attributes(api_key)' do
       it 'returns a hash of demographic info related to the city' do
-        ZillowApi::National.demo_attributes('chicago', ZWSID).should be_a(Hash)
+        ZillowApi::National.demo_attributes(ZWSID).should be_a(Hash)
       end
 
       it 'contains 7 keys' do
-        ZillowApi::National.demo_attributes('chicago', ZWSID).keys.count.should == 7
+        ZillowApi::National.demo_attributes(ZWSID).keys.count.should == 7
       end
 
       it 'returns the correct value for median age' do
-        ZillowApi::National.demo_attributes('chicago', ZWSID)['median age'].should == "36"
+        ZillowApi::National.demo_attributes(ZWSID)['median age'].should == "36"
       end
     end
 
-    describe ".home_value(location, api_key)" do
+    describe ".home_value(api_key)" do
       it 'returns a hash' do
-        ZillowApi::National.home_value("chicago", ZWSID).should be_a(Hash)
+        ZillowApi::National.home_value(ZWSID).should be_a(Hash)
       end
 
       it "contains the key 'zillow home value index'" do
-        ZillowApi::National.home_value("chicago", ZWSID).keys.should include 'zillow home value index'
+        ZillowApi::National.home_value(ZWSID).keys.should include 'zillow home value index'
       end
     end
 
-    describe ".find_by_city(location, api_key" do
+    describe ".find(api_key)" do
       it "returns an instance of the ZillowApi::People class" do
-        ZillowApi::National.find_by_city("chicago", ZWSID).should be_a(ZillowApi::National)
+        ZillowApi::National.find(ZWSID).should be_a(ZillowApi::National)
       end
     end
   end

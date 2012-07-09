@@ -18,31 +18,30 @@ module ZillowApi
         ZillowApi::Client.new
       end
 
-      def demo_attributes(location, api_key)
+      def demo_attributes(location='chicago', api_key)
         keys = parsed_response(location, api_key).search("page")[-1].search("table")[0].search("attribute").map {|key| key.child.text.downcase }
         values = parsed_response(location, api_key).search("page")[-1].search("table")[0].search("attribute").search("nation").map { |values| values.child.text }
         Hash[keys.zip(values)]
       end
 
-      def home_value(location, api_key)
+      def home_value(location='chicago', api_key)
         key = parsed_response(location, api_key).search("page").first.search("data").first.search("attribute").first.child.text.downcase
         value = parsed_response(location, api_key).search("page").first.search("data").first.search("nation").first.text
         { key => value }
       end
 
-      def find_by_city(location, api_key)
+      def find(location='chicago', api_key)
         attributes = demo_attributes(location, api_key).merge(home_value(location, api_key))
         ZillowApi::National.new(attributes)
       end
 
-      def parsed_response(location, api_key)
+      def parsed_response(location='chicago', api_key)
         parse_all(client.get_city_data(location, api_key))
       end
 
       def parse_all(xml_package)
         Nokogiri::HTML(xml_package)
       end
-
     end
   end
 end
