@@ -12,7 +12,7 @@ describe ZillowApi::Client do
   describe "#get_city_data" do
     context "when given a hash including a valid city and state" do
       it "returns an xml package of data for the specified city" do
-        response = Nokogiri::HTML(client.get_city_data(VALID_CITY))
+        response = Nokogiri::HTML(client.get_city_data(VALID_CITY, ZWSID))
         message = response.search("message").children.first.text
         message.should == REQUEST['0']
       end
@@ -20,7 +20,7 @@ describe ZillowApi::Client do
 
     context "when given an invalid hash" do
       it "returns an error message" do
-        response = Nokogiri::HTML(client.get_city_data(INVALID_CITY))
+        response = Nokogiri::HTML(client.get_city_data(INVALID_CITY, ZWSID))
         message = response.search("message").children.first.text
         message.should == REQUEST['1']
       end

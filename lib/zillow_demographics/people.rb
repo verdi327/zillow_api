@@ -2,8 +2,8 @@ require 'nokogiri'
 
 module ZillowApi
   class People
-    attr_accessor :single_males, :single_females, :median_age, :average_commute_time
-    attr_accessor :transportation, :home_value, :who_live_here
+    attr_accessor :single_males, :single_females, :median_age, :average_commute_time,
+                  :transportation, :home_value, :who_live_here
 
     def initialize(attributes)
       self.average_commute_time = attributes['average commute time (minutes)']
